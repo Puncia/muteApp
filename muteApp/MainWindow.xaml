@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:muteApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="boop" Height="350" Width="329"
+        Background="#191e26"
+        KeyDown="Window_KeyDown" BorderThickness="0" Icon="mute-512.png.ico" WindowStartupLocation="CenterScreen"
+        >
+    <Grid x:Name="scrollViewer">
+        <TextBox x:Name="stateBox" TextWrapping="Wrap" Background="#202123" Foreground="#fffef4" FontFamily="Candara" FontSize="14" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+        <Button x:Name="bindButton" Content="bind key" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="100" Click="bindButton_Click"/>
+
     </Grid>
 </Window>
