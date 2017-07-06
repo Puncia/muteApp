@@ -132,7 +132,7 @@ namespace muteApp
 
             stateBox.Text = string.Empty;
         }
-
+        //test
         private void bindButton_Click(object sender, RoutedEventArgs e)
         {
             isBinding = true;
