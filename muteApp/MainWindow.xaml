@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="boop" Height="350" Width="329"
         Background="#191e26"
-        KeyDown="Window_KeyDown" BorderThickness="0" Icon="mute-512.png.ico" WindowStartupLocation="CenterScreen"
+        BorderThickness="0" Icon="mute-512.png.ico" WindowStartupLocation="CenterScreen"
         >
     <Grid x:Name="scrollViewer">
         <TextBox x:Name="stateBox" TextWrapping="Wrap" Background="#202123" Foreground="#fffef4" FontFamily="Candara" FontSize="14" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>

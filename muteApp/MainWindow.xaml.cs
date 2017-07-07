@@ -36,8 +36,14 @@ namespace muteApp
         static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+        [DllImport("user32.dll")]
+        static extern short GetAsyncKeyState(int nVirtKey);
 
         private const int HOTKEY_ID = 9005;
+                
+        //const int VK_SHIFT = 0x10;
+        const int VK_CONTROL = 0x11;
+        const int VK_MENU = 0x12; //ALT
 
         //Modifiers:
         private const uint MOD_NONE = 0x0000; //[NONE]
@@ -46,7 +52,7 @@ namespace muteApp
         private const uint MOD_SHIFT = 0x0004; //SHIFT
         private const uint MOD_WIN = 0x0008; //WINDOWS
                                              //CAPS LOCK:
-        private uint VK_BINDING = 0x76;
+        private int VK_BINDING = 0x41;
 
         private HwndSource source;
 
@@ -67,6 +73,8 @@ namespace muteApp
             switch (msg)
             {
                 case WM_HOTKEY:
+
+
                     switch (wParam.ToInt32())
                     {
                         case HOTKEY_ID:
@@ -89,8 +97,52 @@ namespace muteApp
                             stateBox.Focus();
                             stateBox.CaretIndex = stateBox.Text.Length;
                             stateBox.ScrollToEnd();
+
                             handled = true;
                             break;
+                    }
+                    break;                    
+                case 0x100: //keypress
+                    if (isBinding)
+                    {
+                        if ((GetAsyncKeyState(0xA5) & 0x8000) != 0)
+                        {
+                            bindButton.Content = "LALT + ...";
+                            if ((wParam.ToInt32() != VK_CONTROL) &&
+                               (wParam.ToInt32() != VK_MENU))
+                            {
+                                isBinding = false;
+
+                                BindHotkey(KeyInterop.KeyFromVirtualKey(wParam.ToInt32()), ModifierKeys.Control | ModifierKeys.Alt);
+                            }
+                        }
+                        else if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
+                        {
+                            bindButton.Content = "CTRL + ...";
+                            if((wParam.ToInt32() != VK_CONTROL) && //means we also hit our key, which is not a modifier key anymore
+                               (wParam.ToInt32() != VK_MENU)) //we should also check if the MENU key (ALT) was pressed, because right ALT is CTRL + ALT
+                            {
+                                //we want to register a new binding
+                                isBinding = false;
+                                
+                                BindHotkey(KeyInterop.KeyFromVirtualKey(wParam.ToInt32()), ModifierKeys.Control);
+                            }
+                        }
+                    }
+                    break;
+                case 0x0104: //WM_SYSKEYDOWN, needed for ALT aka MENU key (only left one)
+                    if(isBinding)
+                    {
+                        if ((GetAsyncKeyState(VK_MENU) & 0x8000) != 0)
+                        {
+                            bindButton.Content = "ALT + ...";
+                            if (wParam.ToInt32() != VK_MENU)
+                            {
+                                isBinding = false;
+
+                                BindHotkey(KeyInterop.KeyFromVirtualKey(wParam.ToInt32()), ModifierKeys.Alt);
+                            }
+                        }
                     }
                     break;
             }
@@ -140,33 +192,11 @@ namespace muteApp
             UnregisterHotKey(handle, HOTKEY_ID);
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!isBinding)
-                return;
-
-            //CTRL
-            if (((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) && (e.Key != Key.LeftCtrl && e.Key != Key.RightCtrl))
-            {
-                BindHotkey(e.Key, ModifierKeys.Control);
-                isBinding = false;
-            }
-
-            //ALT
-            //if (((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) && (e.Key != Key.LeftAlt && e.Key != Key.RightAlt))
-            //{
-            //    bindButton.Content = "bind key";
-            //    RegisterHotKey(handle, HOTKEY_ID, MOD_ALT, VK_BINDING = (uint)KeyInterop.VirtualKeyFromKey(e.Key));
-            //    stateBox.Text += "Bound hotkey: ALT + " + e.Key + "\n";
-            //    isBinding = false;
-            //}
-        }
-
         private void BindHotkey(Key k, ModifierKeys m)
         {
             bindButton.Content = "bind key";
-            RegisterHotKey(handle, HOTKEY_ID, MOD_CONTROL, VK_BINDING = (uint)KeyInterop.VirtualKeyFromKey(k));
-            stateBox.Text += "Bound hotkey: CTRL + " + k + "\n";
+            RegisterHotKey(handle, HOTKEY_ID, (uint)m, Convert.ToUInt32(VK_BINDING = KeyInterop.VirtualKeyFromKey(k)));
+            stateBox.Text += "Bound hotkey: " + m.ToString() + " + " + k + "\n";
         }
     }
 
