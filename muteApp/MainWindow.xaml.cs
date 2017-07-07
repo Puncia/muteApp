@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Interop;
+using System.Drawing;
 
 namespace muteApp
 {
@@ -55,6 +45,8 @@ namespace muteApp
         private int VK_BINDING = 0x76;
 
         private HwndSource source;
+
+        System.Windows.Forms.NotifyIcon ni;
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -182,6 +174,16 @@ namespace muteApp
         {
             InitializeComponent();
 
+            ni = new System.Windows.Forms.NotifyIcon();
+            ni.Icon = new System.Drawing.Icon("mute-512.png.ico");
+            ni.Visible = true;
+            ni.Click +=
+                delegate (object sender, EventArgs args)
+                {
+                    this.Show();
+                    this.Activate();
+                };
+
             stateBox.Text = string.Empty;
         }
         //test
@@ -206,6 +208,20 @@ namespace muteApp
             RegisterHotKey(handle, HOTKEY_ID, (uint)m, Convert.ToUInt32(VK_BINDING = KeyInterop.VirtualKeyFromKey(k)));
             stateBox.Text += "Bound hotkey: " + m.ToString() + " + " + k + "\n";
         }
-    }
 
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if(this.WindowState == WindowState.Minimized)
+            {
+                this.WindowState = WindowState.Normal;
+                this.Hide();
+            }
+        }
+
+        //Windows tray bar does not clear its icons when app is closed until you hover them
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ni.Visible = false;
+        }
+    }
 }

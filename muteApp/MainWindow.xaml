@@ -8,6 +8,8 @@
         Title="boop" Height="350" Width="329"
         Background="#191e26"
         BorderThickness="0" Icon="mute-512.png.ico" WindowStartupLocation="CenterScreen"
+        StateChanged="Window_StateChanged"
+        Closing="Window_Closing"
         >
     <Grid x:Name="scrollViewer">
         <TextBox x:Name="stateBox" TextWrapping="Wrap" Background="#202123" Foreground="#fffef4" FontFamily="Candara" FontSize="14" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
