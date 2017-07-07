@@ -187,14 +187,22 @@ namespace muteApp
         //test
         private void bindButton_Click(object sender, RoutedEventArgs e)
         {
-            isBinding = true;
-            bindButton.Content = "binding...";
-            UnregisterHotKey(handle, HOTKEY_ID);
+            if (!isBinding)
+            {
+                isBinding = true;
+                bindButton.Content = "binding...(press to cancel)";
+            }
+            else
+            {
+                isBinding = false;
+                bindButton.Content = "bind key";
+            }
         }
 
         private void BindHotkey(Key k, ModifierKeys m)
         {
             bindButton.Content = "bind key";
+            UnregisterHotKey(handle, HOTKEY_ID);
             RegisterHotKey(handle, HOTKEY_ID, (uint)m, Convert.ToUInt32(VK_BINDING = KeyInterop.VirtualKeyFromKey(k)));
             stateBox.Text += "Bound hotkey: " + m.ToString() + " + " + k + "\n";
         }
