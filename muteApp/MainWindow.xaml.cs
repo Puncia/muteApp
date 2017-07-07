@@ -41,9 +41,9 @@ namespace muteApp
 
         private const int HOTKEY_ID = 9005;
                 
-        //const int VK_SHIFT = 0x10;
         const int VK_CONTROL = 0x11;
         const int VK_MENU = 0x12; //ALT
+        const int VK_RMENU = 0xA5; //right ALT
 
         //Modifiers:
         private const uint MOD_NONE = 0x0000; //[NONE]
@@ -52,7 +52,7 @@ namespace muteApp
         private const uint MOD_SHIFT = 0x0004; //SHIFT
         private const uint MOD_WIN = 0x0008; //WINDOWS
                                              //CAPS LOCK:
-        private int VK_BINDING = 0x41;
+        private int VK_BINDING = 0x76;
 
         private HwndSource source;
 
@@ -105,7 +105,7 @@ namespace muteApp
                 case 0x100: //keypress
                     if (isBinding)
                     {
-                        if ((GetAsyncKeyState(0xA5) & 0x8000) != 0)
+                        if ((GetAsyncKeyState(VK_RMENU) & 0x8000) != 0)
                         {
                             bindButton.Content = "LALT + ...";
                             if ((wParam.ToInt32() != VK_CONTROL) &&
