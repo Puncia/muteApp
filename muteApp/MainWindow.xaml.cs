@@ -175,7 +175,8 @@ namespace muteApp
             InitializeComponent();
 
             ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon = new System.Drawing.Icon("mute-512.png.ico");
+            //ni.Icon = new System.Drawing.Icon("mute-512.png.ico");
+            ni.Icon = muteApp.Properties.Resources.mute_512_png;
             ni.Visible = true;
             ni.Click +=
                 delegate (object sender, EventArgs args)

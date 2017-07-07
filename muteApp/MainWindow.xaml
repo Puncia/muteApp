@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="boop" Height="350" Width="329"
         Background="#191e26"
-        BorderThickness="0" Icon="mute-512.png.ico" WindowStartupLocation="CenterScreen"
+        BorderThickness="0" WindowStartupLocation="CenterScreen"
         StateChanged="Window_StateChanged"
         Closing="Window_Closing"
         >
